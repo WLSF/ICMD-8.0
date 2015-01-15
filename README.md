@@ -7,3 +7,13 @@ Copyright (c) 2013 Willian Luigi.
 
 
 - This command processor was made looking for a new way to make commands, and with a positive perspective of get better considering the HCI feedbacks from the users. ICMD 8.0 is faster than ZCMD and YCMD, and is now pointing to reach a great usability level.
+
+####How to install it
+This project contains two important files (gvar.dll, icmd.inc), that represents the project, and an example file (gm_icmd.pwn).
+
+1- Download the zip, which include these files.
+2- Insert the plugin gvar.dll inside your plugins directory (samp/plugins/gvar.dll)
+3- Insert the include icmd.inc inside your includes directory (samp/pawno/include/icmd.inc)
+
+####How to use it
+The project directory contain an example file named [gm_icmd.pwn](https://github.com/WillianLuigi/ICMD-8.0/blob/master/gm_icmd.pwn)
