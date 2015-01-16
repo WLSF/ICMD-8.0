@@ -11,9 +11,10 @@ Copyright (c) 2013 Willian Luigi.
 ####How to install it
 This project contains two important files (gvar.dll, icmd.inc), that represents the project, and an example file (gm_icmd.pwn).
 
-1- Download the zip, which include these files.
-2- Insert the plugin gvar.dll inside your plugins directory (samp/plugins/gvar.dll)
-3- Insert the include icmd.inc inside your includes directory (samp/pawno/include/icmd.inc)
+- Download the zip, which include these files.
+- Insert the plugin gvar.dll inside your plugins directory (samp/plugins/gvar.dll)
+- Edit your server.cfg, adding the 'gvar' on the plugins line.
+- Insert the include icmd.inc inside your includes directory (samp/pawno/include/icmd.inc)
 
 ####How to use it
 The project directory contain an example file named [gm_icmd.pwn](https://github.com/WillianLuigi/ICMD-8.0/blob/master/gm_icmd.pwn)
