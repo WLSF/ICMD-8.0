@@ -116,7 +116,6 @@ public OnPlayerCommandText(playerid, cmdtext[])
 	{
 	    new __@cmd[24];
 		strmid(__@cmd, cmdtext, 1, __@i);
-		print("1");
 		#if defined ICMD_CALLBACK
 		    switch (OnCommandCalled(playerid, __@cmd))
 		    {
@@ -124,17 +123,13 @@ public OnPlayerCommandText(playerid, cmdtext[])
 				case 2: return ICMD_ERROR;
 			}
 		#endif
-		print("2");
 		if (!cmd_exists(__@cmd)) return 0;
 		while(cmdtext[++__@i] == 0x20){}
 		strcat(_wrefCmdParams, cmdtext[__@i]);
-		print("3");
-		printf("%d, %s, %s", _wrefPlayerId, _wrefCmdParams, __@cmd);
 		___@ICMD_GOTO_ADDR(__@cmd);
 	}
 	else
 	{
-	    print("1");
 		#if defined ICMD_CALLBACK
 		    switch (OnCommandCalled(playerid, cmdtext[1]))
 		    {
@@ -142,7 +137,6 @@ public OnPlayerCommandText(playerid, cmdtext[])
 				case 2: return ICMD_ERROR;
 			}
 		#endif
-		print("2");
 		if (!cmd_exists(cmdtext[1])) return 0;
 		___@ICMD_GOTO_ADDR(cmdtext[1]);
 	}
