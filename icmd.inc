@@ -76,6 +76,8 @@ native GetGVarType(const name[], id = 0);
 #endif
 #define CMD:%0(%1) get_cmd_params(%0)
 #define COMMAND:%0(%1) get_cmd_params(%0)
+#define cmd_%0(%1) ___@ICMD_GOTO_ADDR(#%0)
+#define call(%0) ___@ICMD_GOTO_ADDR(%0)
 new _wrefPlayerId, _wrefCmdHash, _wrefCmdParams[128], _wrefReturnValue;
 #pragma unused _wrefPlayerId
 #pragma unused _wrefCmdHash
