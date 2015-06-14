@@ -48,11 +48,11 @@ native GetGVarType(const name[], id = 0);
 *       ICMD 8.0 Por Willian Luigi
 *
 *   -LOG:
-*   Data de inicio: 07/10/2013 ICMD vers„o 7.0 beta
-*                   11/10/2013 ICMD vers„o 7.1 alpha
+*   Data de inicio: 07/10/2013 ICMD vers√£o 7.0 beta
+*                   11/10/2013 ICMD vers√£o 7.1 alpha
 *
-*   Ultima atualizaÁ„o: 24/12/2014 ICMD vers„o 8.0 beta
-*						08/01/2015 ICMD vers„o 8.0 oficial
+*   Ultima atualiza√ß√£o: 24/12/2014 ICMD vers√£o 8.0 beta
+*						08/01/2015 ICMD vers√£o 8.0 oficial
 *
 *
 *   - CODE.ME, 2013.1 - Willian Luigi
@@ -89,7 +89,7 @@ new _wrefPlayerId, _wrefCmdHash, _wrefCmdParams[128], _wrefReturnValue;
 stock ___@ICMD_SAVE_ADDR(name[])
 {
  	static addr;
-	#emit load.s.pri 4
+	#emit load.s.pri 4 
 	#emit stor.pri addr
 	//setproperty(.id = 0, .name = name, .value = addr);
 	SetGVarInt(name, addr);
@@ -108,89 +108,140 @@ stock _wrefHash(s[])
 }
 public OnPlayerCommandText(playerid, cmdtext[])
 {
-    _wrefCmdParams[0]=EOS;
-	new __@i = 2;
-    __@i = strfind(cmdtext, " ");
-    _wrefPlayerId = playerid;
-    _wrefCmdHash = cmdtext[1];
+    	static __@cmd[24];
+    	_wrefCmdParams[0]=EOS;
+	new __@i = strfind(cmdtext, " ");
+    	_wrefPlayerId = playerid;
+    	_wrefCmdHash = cmdtext[1];
 
 	if (__@i != -1)
 	{
-	    new __@cmd[24];
 		strmid(__@cmd, cmdtext, 1, __@i);
-		#if defined ICMD_CALLBACK
-		    switch (OnCommandCalled(playerid, __@cmd))
-		    {
-				case 0: return ICMD_DEFAULT;
-				case 2: return ICMD_ERROR;
-			}
+		#if defined OnCommandCalled
+	    	switch (OnCommandCalled(playerid, __@cmd))
+	    	{
+			case 0: return ICMD_DEFAULT;
+			case 2: return ICMD_ERROR;
+		}
 		#endif
-		if (!cmd_exists(__@cmd)) return 0;
-		while(cmdtext[++__@i] == 0x20){}
-		strcat(_wrefCmdParams, cmdtext[__@i]);
-		___@ICMD_GOTO_ADDR(__@cmd);
+		if (cmd_exists(__@cmd)) 
+		{
+			while(cmdtext[++__@i] == 0x20){}
+			strcat(_wrefCmdParams, cmdtext[__@i]);
+			___@ICMD_GOTO_ADDR(__@cmd);
+			return 1;
+		}
+		return 0;
 	}
 	else
 	{
-		#if defined ICMD_CALLBACK
-		    switch (OnCommandCalled(playerid, cmdtext[1]))
-		    {
+		#if defined OnCommandCalled
+		    	switch (OnCommandCalled(playerid, cmdtext[1]))
+		    	{
 				case 0: return ICMD_DEFAULT;
 				case 2: return ICMD_ERROR;
 			}
 		#endif
-		if (!cmd_exists(cmdtext[1])) return 0;
-		___@ICMD_GOTO_ADDR(cmdtext[1]);
+		if (cmd_exists(cmdtext[1])) 
+		{
+			___@ICMD_GOTO_ADDR(cmdtext[1]);
+			return 1;
+		}
+		return 0;
 	}
-
-	return 1;
 }
 
 //_ALS_ hook method 7, Thanks to Y_Less and ipsBruno
-public OnGameModeInit()
-{
-
-	Listeners(0, "");
-
-	if (funcidx("icmd_OnGameModeInit") != -1)
+#if defined FILTERSCRIPT
+	public OnFilterScriptInit()
 	{
-		return CallLocalFunction("icmd_OnGameModeInit", "");
+		Listeners(0, "");
+		#if defined icmd_OnFilterScriptInit
+			icmd_OnFilterScriptInit();
+		#endif
+		return 1;
 	}
-	return 1;
-}
-#if defined _ALS_OnGameModeInit
-    #undef OnGameModeInit
+	#if defined _ALS_OnFilterScriptInit
+	    #undef OnFilterScriptInit
+	#else
+	    #define _ALS_OnFilterScriptInit
+	#endif
+	#define OnFilterScriptInit icmd_OnFilterScriptInit
+	forward icmd_OnFilterScriptInit();
+	
+	public OnFilterScriptExit()
+	{
+		//deleting all the GVars allocated till the moment. Thanks to Incognito
+		new name[24];
+		for (new i = 0, j = GetGVarsUpperIndex(); i < j; i++)
+		{
+		    if (GetGVarNameAtIndex(i, name))
+		    {
+		        DeleteGVar(name);
+		    }
+		}
+	
+		#if defined icmd_OnFilterScriptExit
+			icmd_OnFilterScriptExit();
+		#endif
+		return 1;
+	}
+	#if defined _ALS_OnFilterScriptExit
+	    #undef OnFilterScriptExit
+	#else
+	    #define _ALS_OnFilterScriptExit
+	#endif
+	#define OnFilterScriptExit icmd_OnFilterScriptExit
+	forward icmd_OnFilterScriptExit();
+
 #else
-    #define _ALS_OnGameModeInit
-#endif
-#define OnGameModeInit icmd_OnGameModeInit
-forward icmd_OnGameModeInit();
-public OnGameModeExit()
-{
-	//deleting all the GVars allocated till the moment. Thanks to Incognito
-	new name[24];
-	for (new i = 0, j = GetGVarsUpperIndex(); i < j; i++)
+	public OnGameModeInit()
 	{
-	    if (GetGVarNameAtIndex(i, name))
-	    {
-	        DeleteGVar(name);
-	    }
+		Listeners(0, "");
+		#if defined icmd_OnGameModeInit
+			icmd_OnGameModeInit();
+		#endif
+		return 1;
 	}
+	#if defined _ALS_OnGameModeInit
+	    #undef OnGameModeInit
+	#else
+	    #define _ALS_OnGameModeInit
+	#endif
+	#define OnGameModeInit icmd_OnGameModeInit
+	#if defined icmd_OnGameModeInit
+		forward icmd_OnGameModeInit();
+	#endif
+	public OnGameModeExit()
+	{
+		//deleting all the GVars allocated till the moment. Thanks to Incognito
+		new name[24];
+		for (new i = 0, j = GetGVarsUpperIndex(); i < j; i++)
+		{
+		    if (GetGVarNameAtIndex(i, name))
+		    {
+		        DeleteGVar(name);
+		    }
+		}
+	
+		#if defined icmd_OnGameModeExit
+			icmd_OnGameModeExit();
+		#endif
+		return 1;
+	}
+	#if defined _ALS_OnGameModeExit
+	    #undef OnGameModeExit
+	#else
+	    #define _ALS_OnGameModeExit
+	#endif
+	#define OnGameModeExit icmd_OnGameModeExit
+	#if defined icmd_OnGameModeExit
+		forward icmd_OnGameModeExit();
+	#endif
+#endif
 
-	if (funcidx("icmd_OnGameModeExit") != -1)
-	{
-		return CallLocalFunction("icmd_OnGameModeExit", "");
-	}
-	return 1;
-}
-#if defined _ALS_OnGameModeExit
-    #undef OnGameModeExit
-#else
-    #define _ALS_OnGameModeExit
-#endif
-#define OnGameModeExit icmd_OnGameModeExit
-forward icmd_OnGameModeExit();
 forward Listeners(playerid, params[]);
-#if defined ICMD_CALLBACK
+
+#if defined OnCommandCalled
 forward OnCommandCalled(playerid, cmd[]);
 #endif
